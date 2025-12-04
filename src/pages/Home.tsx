@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plane, Hotel, Package, Map, LayoutDashboard, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
+import { Plane, Hotel, Package, Map, LayoutDashboard, ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Input } from '../components/ui/input';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { Card, CardContent } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import TripsSection from '../components/TripsSection';
+import ParallaxHero from '../components/ParallaxHero';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -104,77 +104,11 @@ export default function Home() {
 
   return (
     <div className="pt-0">
-      {/* Hero Section with Video Background */}
-      <section className="relative h-screen flex items-center justify-center overflow-hidden">
-        {/* HTML5 Video Background */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="https://videos.pexels.com/video-files/2169880/2169880-uhd_2560_1440_30fps.mp4" type="video/mp4" />
-        </video>
-        
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/50 z-10" />
-        
-        <div className="relative z-20 text-center text-white px-4 max-w-4xl mx-auto animate-fade-in">
-          <h1 className="mb-6 text-white drop-shadow-lg animate-slide-up">Plan. Explore. Experience.</h1>
-          <p className="mb-8 text-xl drop-shadow-md animate-slide-up" style={{ animationDelay: '0.1s' }}>Your journey to extraordinary destinations begins here</p>
-          
-          {/* Glass Morphism Search Bar */}
-          <div className="backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl p-6 shadow-2xl animate-slide-up" style={{ animationDelay: '0.2s' }}>
-            <Tabs defaultValue="destination" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 mb-6 bg-white/20 backdrop-blur-sm border border-white/30">
-                <TabsTrigger value="destination" className="data-[state=active]:bg-white/30 data-[state=active]:text-white text-white/80">Destination</TabsTrigger>
-                <TabsTrigger value="flights" className="data-[state=active]:bg-white/30 data-[state=active]:text-white text-white/80">Flights</TabsTrigger>
-                <TabsTrigger value="hotels" className="data-[state=active]:bg-white/30 data-[state=active]:text-white text-white/80">Hotels</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="destination" className="space-y-4">
-                <div className="flex gap-2">
-                  <Input 
-                    placeholder="Where do you want to go?" 
-                    className="flex-1 bg-white/90 backdrop-blur-sm border-white/40 placeholder:text-gray-500" 
-                  />
-                  <Button className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 hover:scale-105">
-                    <Search className="size-4 mr-2" />
-                    Search
-                  </Button>
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="flights" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Input placeholder="From" className="bg-white/90 backdrop-blur-sm border-white/40" />
-                  <Input placeholder="To" className="bg-white/90 backdrop-blur-sm border-white/40" />
-                  <Input type="date" className="bg-white/90 backdrop-blur-sm border-white/40" />
-                </div>
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 hover:scale-105">Search Flights</Button>
-              </TabsContent>
-              
-              <TabsContent value="hotels" className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Input placeholder="City" className="bg-white/90 backdrop-blur-sm border-white/40" />
-                  <Input type="date" placeholder="Check-in" className="bg-white/90 backdrop-blur-sm border-white/40" />
-                  <Input type="date" placeholder="Check-out" className="bg-white/90 backdrop-blur-sm border-white/40" />
-                </div>
-                <Button className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 hover:scale-105">Search Hotels</Button>
-              </TabsContent>
-            </Tabs>
-          </div>
+      {/* Trips Section - First Screen */}
+      <TripsSection />
 
-          <div className="flex gap-4 justify-center mt-8 animate-slide-up" style={{ animationDelay: '0.3s' }}>
-            <Button size="lg" className="bg-white/20 backdrop-blur-md border border-white/30 text-white hover:bg-white/30 transition-all duration-300 hover:scale-105" onClick={() => navigate('/packages')}>
-              Start Planning
-            </Button>
-            <Button size="lg" className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 hover:scale-105" onClick={() => navigate('/journeys')}>
-              Explore Journeys
-            </Button>
-          </div>
-        </div>
-      </section>
+      {/* Parallax Hero - Second Screen */}
+      <ParallaxHero />
 
       {/* Your Journey Begins Here Section */}
       <section className="py-20 bg-neutral-200">

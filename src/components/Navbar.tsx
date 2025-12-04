@@ -19,9 +19,36 @@ export default function Navbar({ isAuthenticated, setIsAuthenticated }: NavbarPr
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
+  // Check if we're on the Home page
+  const isHomePage = location.pathname === '/';
+
+  // Default hidden on home page, visible on other pages
+  const [isVisible, setIsVisible] = useState(!isHomePage);
+
   // Check if we're on the Guides page, Auth page, or Dashboard page
   const isGuidesPage = location.pathname === '/guides';
   const isDarkTextPage = location.pathname === '/guides' || location.pathname === '/auth' || location.pathname === '/dashboard' || location.pathname === '/ai-planner' || location.pathname === '/contact';
+
+  // Handle scroll visibility on home page
+  useEffect(() => {
+    if (!isHomePage) {
+      setIsVisible(true);
+      return;
+    }
+
+    const handleScroll = () => {
+      const scrollY = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      // Show navbar after scrolling past second screen (TripsSection + ParallaxHero)
+      setIsVisible(scrollY > viewportHeight * 2.8);
+    };
+
+    // Initial check
+    handleScroll();
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isHomePage]);
 
   const handleLogout = () => {
     console.log('Logging out...');
@@ -70,7 +97,7 @@ export default function Navbar({ isAuthenticated, setIsAuthenticated }: NavbarPr
   ];
 
   return (
-    <nav className="absolute top-0 w-full z-50 transition-all duration-300">
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-full px-6 py-3">
           <div className="flex justify-between items-center">
