@@ -48,7 +48,7 @@ const ParallaxHero = () => {
         {/* Welcome text */}
         <div className="absolute inset-x-0 top-8 text-center">
           <span className="text-white text-sm tracking-[0.3em] uppercase">
-            WELCOME TO VIEW
+            WELCOME TO WEAVE
           </span>
         </div>
 
@@ -65,15 +65,17 @@ const ParallaxHero = () => {
 
         {/* Mountain layer - moves up during sticky scroll */}
         <div
-          className="absolute inset-x-0 bottom-0 h-full pointer-events-none"
+          className="absolute inset-x-0 bottom-0 w-full pointer-events-none"
           style={{
-            backgroundImage: 'url(/home/mountain.png)',
-            backgroundSize: 'cover',
-            backgroundPosition: 'bottom center',
-            backgroundRepeat: 'no-repeat',
             transform: `translateY(${mountainOffset}px)`,
           }}
-        />
+        >
+          <img
+            src="/home/mountain.png"
+            alt=""
+            className="w-full h-auto object-contain"
+          />
+        </div>
       </div>
     </div>
   );
