@@ -45,6 +45,13 @@ const ParallaxHero = () => {
           }}
         />
 
+        {/* Welcome text */}
+        <div className="absolute inset-x-0 top-8 text-center">
+          <span className="text-white text-sm tracking-[0.3em] uppercase">
+            WELCOME TO VIEW
+          </span>
+        </div>
+
         {/* Text layer */}
         <div
           className="absolute inset-x-0 top-20 w-[80%] mx-auto flex items-center justify-center"
