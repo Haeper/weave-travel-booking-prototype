@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 const ParallaxHero = () => {
-  const [mountainOffset, setMountainOffset] = useState(350);
+  const [mountainOffset, setMountainOffset] = useState(500);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -16,11 +16,11 @@ const ParallaxHero = () => {
       if (rect.top <= stickyStart && rect.bottom > window.innerHeight) {
         // We're in the sticky zone - move the mountain up
         const scrolledIntoSticky = -rect.top;
-        const newOffset = Math.max(0, 350 - scrolledIntoSticky * 0.5);
+        const newOffset = Math.max(0, 500 - scrolledIntoSticky * 0.6);
         setMountainOffset(newOffset);
       } else if (rect.top > stickyStart) {
         // Before sticky zone - mountain at initial position
-        setMountainOffset(350);
+        setMountainOffset(500);
       } else {
         // After sticky zone - mountain fully up
         setMountainOffset(0);
@@ -47,7 +47,7 @@ const ParallaxHero = () => {
 
         {/* Text layer */}
         <div
-          className="absolute inset-x-0 top-20 h-[20%] flex items-center justify-center"
+          className="absolute inset-x-0 top-20 w-[80%] mx-auto flex items-center justify-center"
         >
           <img
             src="/home/text.png"
