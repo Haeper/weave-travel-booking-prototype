@@ -14,7 +14,7 @@ export function Image360Viewer({ imageUrl, width = '100%', height = '70vh' }: Im
   const [lastPos, setLastPos] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [image, setImage] = useState<HTMLImageElement | null>(null);
-  const animationRef = useRef<number>();
+  const animationRef = useRef<number | undefined>(undefined);
 
   // Load image
   useEffect(() => {

@@ -35,7 +35,7 @@ export function PassengerSelector({ value, onChange }: PassengerSelectorProps) {
   };
 
   const getDisplayText = () => {
-    const parts = [];
+    const parts: string[] = [];
     if (value.adults > 0) parts.push(`${value.adults} Adult${value.adults > 1 ? 's' : ''}`);
     if (value.children > 0) parts.push(`${value.children} Child${value.children > 1 ? 'ren' : ''}`);
     if (value.infants > 0) parts.push(`${value.infants} Infant${value.infants > 1 ? 's' : ''}`);

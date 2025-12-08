@@ -1,4 +1,5 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import { Plane, Menu, User, LogOut, LayoutDashboard, ChevronDown } from 'lucide-react';
 import { Button } from './ui/button';
 import {
@@ -7,27 +8,24 @@ import {
   SheetTrigger,
 } from './ui/sheet';
 import { useState, useEffect, useRef } from 'react';
+import { useAuth } from '../context/AuthContext';
 
-interface NavbarProps {
-  isAuthenticated: boolean;
-  setIsAuthenticated: (value: boolean) => void;
-}
-
-export default function Navbar({ isAuthenticated, setIsAuthenticated }: NavbarProps) {
-  const navigate = useNavigate();
-  const location = useLocation();
+export default function Navbar() {
+  const { isAuthenticated, setIsAuthenticated } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Check if we're on the Home page
-  const isHomePage = location.pathname === '/';
+  const isHomePage = pathname === '/';
 
   // Default hidden on home page, visible on other pages
   const [isVisible, setIsVisible] = useState(!isHomePage);
 
   // Check if we're on the Guides page, Auth page, or Dashboard page
-  const isGuidesPage = location.pathname === '/guides';
-  const isDarkTextPage = location.pathname === '/guides' || location.pathname === '/auth' || location.pathname === '/dashboard' || location.pathname === '/ai-planner' || location.pathname === '/contact';
+  const isGuidesPage = pathname === '/guides';
+  const isDarkTextPage = pathname === '/guides' || pathname === '/auth' || pathname === '/dashboard' || pathname === '/ai-planner' || pathname === '/contact';
 
   // Handle scroll visibility on home page
   useEffect(() => {
@@ -57,13 +55,13 @@ export default function Navbar({ isAuthenticated, setIsAuthenticated }: NavbarPr
     localStorage.removeItem('userEmail');
     localStorage.removeItem('userName');
     setDropdownOpen(false);
-    navigate('/');
+    router.push('/');
   };
 
   const handleDashboardClick = () => {
     console.log('Navigating to dashboard...');
     setDropdownOpen(false);
-    navigate('/dashboard');
+    router.push('/dashboard');
   };
 
   // Close dropdown when clicking outside
@@ -84,16 +82,16 @@ export default function Navbar({ isAuthenticated, setIsAuthenticated }: NavbarPr
   }, [dropdownOpen]);
 
   const navLinks = [
-    { to: '/', label: 'Home' },
-    { to: '/flights', label: 'Flights' },
-    { to: '/hotels', label: 'Hotels' },
-    { to: '/packages', label: 'Packages' },
-    { to: '/destinations', label: 'Destinations' },
-    { to: '/journeys', label: 'Community Journeys' },
-    { to: '/guides', label: 'Local Guides' },
-    { to: '/ai-planner', label: 'AI Planner' },
-    { to: '/about', label: 'About' },
-    { to: '/contact', label: 'Contact' },
+    { href: '/', label: 'Home' },
+    { href: '/flights', label: 'Flights' },
+    { href: '/hotels', label: 'Hotels' },
+    { href: '/packages', label: 'Packages' },
+    { href: '/destinations', label: 'Destinations' },
+    { href: '/journeys', label: 'Community Journeys' },
+    { href: '/guides', label: 'Local Guides' },
+    { href: '/ai-planner', label: 'AI Planner' },
+    { href: '/about', label: 'About' },
+    { href: '/contact', label: 'Contact' },
   ];
 
   return (
@@ -102,7 +100,7 @@ export default function Navbar({ isAuthenticated, setIsAuthenticated }: NavbarPr
         <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-full px-6 py-3">
           <div className="flex justify-between items-center">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 transition-transform duration-300 hover:scale-105">
+            <Link href="/" className="flex items-center gap-2 transition-transform duration-300 hover:scale-105">
               <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg shadow-lg">
                 <Plane className="size-6 text-white" />
               </div>
@@ -113,10 +111,10 @@ export default function Navbar({ isAuthenticated, setIsAuthenticated }: NavbarPr
             <div className="hidden lg:flex items-center gap-8">
               {navLinks.slice(0, 7).map((link) => (
                 <Link
-                  key={link.to}
-                  to={link.to}
-                  className={isDarkTextPage 
-                    ? "text-gray-700 hover:text-black transition-all duration-300 hover:scale-105" 
+                  key={link.href}
+                  href={link.href}
+                  className={isDarkTextPage
+                    ? "text-gray-700 hover:text-black transition-all duration-300 hover:scale-105"
                     : "text-white/90 hover:text-white transition-all duration-300 hover:scale-105 drop-shadow-md"
                   }
                 >
@@ -165,8 +163,8 @@ export default function Navbar({ isAuthenticated, setIsAuthenticated }: NavbarPr
                   )}
                 </div>
               ) : (
-                <Button 
-                  onClick={() => navigate('/auth')} 
+                <Button
+                  onClick={() => router.push('/auth')}
                   size="sm"
                   className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 hover:scale-105 shadow-lg"
                 >
@@ -192,8 +190,8 @@ export default function Navbar({ isAuthenticated, setIsAuthenticated }: NavbarPr
                   <div className="flex flex-col gap-4 mt-8">
                     {navLinks.map((link) => (
                       <Link
-                        key={link.to}
-                        to={link.to}
+                        key={link.href}
+                        href={link.href}
                         className="text-gray-600 hover:text-gray-900 transition-colors p-2"
                       >
                         {link.label}
