@@ -295,7 +295,6 @@ export default function DestinationDetail() {
                 onClick={() => router.push('/flights')}
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white/10"
               >
                 Find Flights
               </Button>
