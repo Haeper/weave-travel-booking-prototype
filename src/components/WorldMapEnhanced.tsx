@@ -1,3 +1,4 @@
+import { MapPin } from 'lucide-react';
 import { useState } from 'react';
 
 interface Destination {
@@ -15,7 +16,7 @@ interface Route {
   label?: string;
 }
 
-interface WorldMapProps {
+interface WorldMapEnhancedProps {
   selectedRegion: string | null;
   onRegionSelect: (region: string | null) => void;
   showDestinations?: boolean;
@@ -25,7 +26,7 @@ interface WorldMapProps {
   onDestinationClick?: (destination: Destination) => void;
 }
 
-export default function WorldMap({
+export default function WorldMapEnhanced({
   selectedRegion,
   onRegionSelect,
   showDestinations = false,
@@ -33,7 +34,7 @@ export default function WorldMap({
   destinations = [],
   routes = [],
   onDestinationClick,
-}: WorldMapProps) {
+}: WorldMapEnhancedProps) {
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [hoveredDestination, setHoveredDestination] =
     useState<Destination | null>(null);
@@ -125,7 +126,9 @@ export default function WorldMap({
   return (
     <div className="w-full rounded-3xl border border-gray-200 bg-gradient-to-br from-blue-50 to-purple-50 p-8 shadow-xl">
       <h3 className="mb-6 text-center text-gray-700">
-        Click on a Region to Filter Guides
+        {showDestinations
+          ? 'Explore Popular Destinations'
+          : 'Click on a Region to Filter Guides'}
       </h3>
 
       <div className="relative w-full" style={{ paddingBottom: '50%' }}>
@@ -208,27 +211,182 @@ export default function WorldMap({
               )}
             </g>
           ))}
+
+          {/* Routes - curved paths between destinations */}
+          {showRoutes &&
+            routes.map((route, idx) => {
+              const midX = (route.from.x + route.to.x) / 2;
+              const midY = (route.from.y + route.to.y) / 2 - 30; // Curve upwards
+              const pathD = `M ${route.from.x} ${route.from.y} Q ${midX} ${midY} ${route.to.x} ${route.to.y}`;
+
+              return (
+                <g key={idx}>
+                  {/* Animated dashed line */}
+                  <path
+                    d={pathD}
+                    fill="none"
+                    stroke="#3b82f6"
+                    strokeWidth="2"
+                    strokeDasharray="5,5"
+                    opacity="0.6"
+                  >
+                    <animate
+                      attributeName="stroke-dashoffset"
+                      from="0"
+                      to="10"
+                      dur="1s"
+                      repeatCount="indefinite"
+                    />
+                  </path>
+
+                  {/* Animated plane icon */}
+                  <g>
+                    <animateMotion
+                      dur="6s"
+                      repeatCount="indefinite"
+                      path={pathD}
+                    />
+                    <circle cx="0" cy="0" r="4" fill="#3b82f6" />
+                    <path
+                      d="M-3,-2 L3,0 L-3,2 Z"
+                      fill="white"
+                      transform="rotate(45)"
+                    />
+                  </g>
+                </g>
+              );
+            })}
+
+          {/* Destination Pins */}
+          {showDestinations &&
+            displayDestinations.map((dest, idx) => (
+              <g
+                key={idx}
+                className="cursor-pointer"
+                onMouseEnter={() => setHoveredDestination(dest)}
+                onMouseLeave={() => setHoveredDestination(null)}
+                onClick={() => onDestinationClick && onDestinationClick(dest)}
+              >
+                {/* Pin shadow */}
+                <ellipse
+                  cx={dest.x}
+                  cy={dest.y + 18}
+                  rx="6"
+                  ry="2"
+                  fill="black"
+                  opacity="0.2"
+                />
+
+                {/* Pin */}
+                <g
+                  className="transition-transform duration-200"
+                  style={{
+                    transform:
+                      hoveredDestination?.name === dest.name
+                        ? 'scale(1.2)'
+                        : 'scale(1)',
+                    transformOrigin: `${dest.x}px ${dest.y}px`,
+                  }}
+                >
+                  <path
+                    d={`M${dest.x},${dest.y - 15} 
+                     C${dest.x - 7},${dest.y - 15} ${dest.x - 12},${dest.y - 10} ${dest.x - 12},${dest.y - 3}
+                     C${dest.x - 12},${dest.y + 4} ${dest.x},${dest.y + 12} ${dest.x},${dest.y + 12}
+                     C${dest.x},${dest.y + 12} ${dest.x + 12},${dest.y + 4} ${dest.x + 12},${dest.y - 3}
+                     C${dest.x + 12},${dest.y - 10} ${dest.x + 7},${dest.y - 15} ${dest.x},${dest.y - 15} Z`}
+                    fill={
+                      hoveredDestination?.name === dest.name
+                        ? '#3b82f6'
+                        : '#ef4444'
+                    }
+                    stroke="white"
+                    strokeWidth="2"
+                  />
+                  <circle cx={dest.x} cy={dest.y - 7} r="4" fill="white" />
+                </g>
+
+                {/* Label on hover */}
+                {hoveredDestination?.name === dest.name && (
+                  <g>
+                    <rect
+                      x={dest.x - 40}
+                      y={dest.y - 45}
+                      width="80"
+                      height="28"
+                      rx="4"
+                      fill="white"
+                      stroke="#3b82f6"
+                      strokeWidth="2"
+                      filter="drop-shadow(0 2px 4px rgba(0,0,0,0.2))"
+                    />
+                    <text
+                      x={dest.x}
+                      y={dest.y - 35}
+                      textAnchor="middle"
+                      fill="#1f2937"
+                      fontSize="11"
+                      fontWeight="600"
+                    >
+                      {dest.name}
+                    </text>
+                    <text
+                      x={dest.x}
+                      y={dest.y - 23}
+                      textAnchor="middle"
+                      fill="#6b7280"
+                      fontSize="9"
+                    >
+                      {dest.price}
+                    </text>
+                  </g>
+                )}
+
+                {/* Pulse animation */}
+                {hoveredDestination?.name === dest.name && (
+                  <circle
+                    cx={dest.x}
+                    cy={dest.y}
+                    r="15"
+                    fill="#3b82f6"
+                    className="animate-ping"
+                    opacity="0.4"
+                  />
+                )}
+              </g>
+            ))}
         </svg>
       </div>
 
       {/* Legend */}
       <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded bg-slate-400"></div>
-          <span className="text-gray-600">Available</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded bg-blue-400"></div>
-          <span className="text-gray-600">Hover</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="h-4 w-4 rounded bg-blue-600"></div>
-          <span className="text-gray-600">Selected</span>
-        </div>
+        {!showDestinations && (
+          <>
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 rounded bg-slate-400"></div>
+              <span className="text-gray-600">Available</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 rounded bg-blue-400"></div>
+              <span className="text-gray-600">Hover</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-4 w-4 rounded bg-blue-600"></div>
+              <span className="text-gray-600">Selected</span>
+            </div>
+          </>
+        )}
+        {showDestinations && (
+          <div className="flex items-center gap-2">
+            <MapPin className="h-4 w-4 text-red-500" />
+            <span className="text-gray-600">
+              Click pins to explore destinations
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Selected region display */}
-      {selectedRegion && (
+      {selectedRegion && !showDestinations && (
         <div className="animate-fade-in mt-4 text-center">
           <p className="text-gray-700">
             Showing guides in{' '}

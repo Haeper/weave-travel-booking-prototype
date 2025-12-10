@@ -16,7 +16,7 @@ import { Separator } from '@/components/ui/separator';
 import { Calendar, Check, MapPin, Sparkles, Stars, Wand2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 interface Package {
@@ -444,12 +444,33 @@ export default function Packages() {
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <Button
+                    <motion.div
                       className="flex-1"
-                      onClick={() => handleBookNow(pkg)}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      Book Now
-                    </Button>
+                      <Button
+                        className="group relative w-full overflow-hidden"
+                        onClick={() => router.push(`/packages/${pkg.id}`)}
+                      >
+                        <motion.span
+                          animate={{
+                            x: ['-100%', '200%'],
+                          }}
+                          transition={{
+                            duration: 2.5,
+                            repeat: Infinity,
+                            ease: 'easeInOut',
+                            repeatDelay: 0.5,
+                          }}
+                          className="absolute inset-y-0 w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                          style={{ left: 0 }}
+                        />
+                        <span className="relative z-10">View Details</span>
+                      </Button>
+                    </motion.div>
                     <Button
                       variant="outline"
                       className="flex-1"

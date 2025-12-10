@@ -1,14 +1,19 @@
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
-import { Plane, Menu, User, LogOut, LayoutDashboard, ChevronDown } from 'lucide-react';
-import { Button } from './ui/button';
 import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from './ui/sheet';
-import { useState, useEffect, useRef } from 'react';
+  ChevronDown,
+  Heart,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Plane,
+  Settings,
+  User,
+} from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { Button } from './ui/button';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 
 export default function Navbar() {
   const { isAuthenticated, setIsAuthenticated } = useAuth();
@@ -25,7 +30,12 @@ export default function Navbar() {
 
   // Check if we're on the Guides page, Auth page, or Dashboard page
   const isGuidesPage = pathname === '/guides';
-  const isDarkTextPage = pathname === '/guides' || pathname === '/auth' || pathname === '/dashboard' || pathname === '/ai-planner' || pathname === '/contact';
+  const isDarkTextPage =
+    pathname === '/guides' ||
+    pathname === '/auth' ||
+    pathname === '/dashboard' ||
+    pathname === '/profile' ||
+    pathname === '/wishlist';
 
   // Handle scroll visibility on home page
   useEffect(() => {
@@ -67,7 +77,10 @@ export default function Navbar() {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setDropdownOpen(false);
       }
     };
@@ -86,7 +99,7 @@ export default function Navbar() {
     { href: '/flights', label: 'Flights' },
     { href: '/hotels', label: 'Hotels' },
     { href: '/packages', label: 'Packages' },
-    { href: '/destinations', label: 'Destinations' },
+    { href: '/destinations', label: 'Trending Destinations' },
     { href: '/journeys', label: 'Community Journeys' },
     { href: '/guides', label: 'Local Guides' },
     { href: '/ai-planner', label: 'AI Planner' },
@@ -95,27 +108,41 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-full pointer-events-none'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-        <div className="backdrop-blur-xl bg-white/10 border border-white/20 shadow-2xl rounded-full px-6 py-3">
-          <div className="flex justify-between items-center">
+    <nav
+      className={`fixed top-0 z-50 w-full transition-all duration-500 ${isVisible ? 'translate-y-0 opacity-100' : 'pointer-events-none -translate-y-full opacity-0'}`}
+    >
+      <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+        <div className="rounded-full border border-white/20 bg-white/10 px-6 py-3 shadow-2xl backdrop-blur-xl">
+          <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 transition-transform duration-300 hover:scale-105">
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-lg shadow-lg">
+            <Link
+              href="/"
+              className="flex items-center gap-2 transition-transform duration-300 hover:scale-105"
+            >
+              <div className="rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 p-2 shadow-lg">
                 <Plane className="size-6 text-white" />
               </div>
-              <span className={isDarkTextPage ? "text-black drop-shadow-lg" : "text-white drop-shadow-lg"}>Weave</span>
+              <span
+                className={
+                  isDarkTextPage
+                    ? 'text-black drop-shadow-lg'
+                    : 'text-white drop-shadow-lg'
+                }
+              >
+                Weave
+              </span>
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden items-center gap-6 xl:flex">
               {navLinks.slice(0, 7).map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={isDarkTextPage
-                    ? "text-gray-700 hover:text-black transition-all duration-300 hover:scale-105"
-                    : "text-white/90 hover:text-white transition-all duration-300 hover:scale-105 drop-shadow-md"
+                  className={
+                    isDarkTextPage
+                      ? 'text-sm text-black transition-all duration-300 hover:scale-105 hover:text-gray-700'
+                      : 'text-sm text-white transition-all duration-300 hover:scale-105 hover:text-gray-200'
                   }
                 >
                   {link.label}
@@ -127,34 +154,57 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
               {isAuthenticated ? (
                 <div className="relative" ref={dropdownRef}>
-                  <Button 
+                  <Button
                     onClick={() => setDropdownOpen(!dropdownOpen)}
-                    variant="ghost" 
-                    size="sm" 
-                    className={isDarkTextPage
-                      ? "gap-2 text-black bg-gray-100 hover:bg-gray-200 transition-all duration-300 border border-gray-300"
-                      : "gap-2 text-white bg-white/20 hover:bg-white/30 transition-all duration-300 border border-white/30"
+                    variant="ghost"
+                    size="sm"
+                    className={
+                      isDarkTextPage
+                        ? 'gap-2 border border-gray-300 bg-gray-100 text-black transition-all duration-300 hover:bg-gray-200'
+                        : 'gap-2 border border-white/30 bg-white/20 text-white transition-all duration-300 hover:bg-white/30'
                     }
                   >
                     <User className="size-4" />
                     <span className="hidden sm:inline">Profile</span>
-                    <ChevronDown className={`size-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
+                    <ChevronDown
+                      className={`size-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`}
+                    />
                   </Button>
-                  
+
                   {/* Custom Dropdown Menu */}
                   {dropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-[100]">
+                    <div className="absolute right-0 z-[100] mt-2 w-56 rounded-lg border border-gray-200 bg-white py-2 shadow-xl">
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          router.push('/profile');
+                        }}
+                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
+                      >
+                        <Settings className="size-4" />
+                        Profile & Settings
+                      </button>
                       <button
                         onClick={handleDashboardClick}
-                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
+                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
                       >
                         <LayoutDashboard className="size-4" />
                         Dashboard
                       </button>
-                      <div className="h-px bg-gray-200 my-1" />
+                      <button
+                        onClick={() => {
+                          setDropdownOpen(false);
+                          router.push('/wishlist');
+                        }}
+                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-100"
+                      >
+                        <Heart className="size-4" />
+                        My Wishlist
+                      </button>
+                      <div className="my-1 h-px bg-gray-200" />
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                        className="flex w-full items-center gap-2 px-4 py-2 text-sm text-red-600 transition-colors hover:bg-red-50"
                       >
                         <LogOut className="size-4" />
                         Logout
@@ -166,7 +216,7 @@ export default function Navbar() {
                 <Button
                   onClick={() => router.push('/auth')}
                   size="sm"
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 hover:scale-105 shadow-lg"
+                  className="bg-gradient-to-r from-blue-600 to-purple-600 shadow-lg transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-purple-700"
                 >
                   Sign In
                 </Button>
@@ -175,43 +225,58 @@ export default function Navbar() {
               {/* Mobile Menu */}
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className={isDarkTextPage 
-                      ? "lg:hidden text-black hover:bg-gray-100" 
-                      : "lg:hidden text-white hover:bg-white/20"
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className={
+                      isDarkTextPage
+                        ? 'text-black hover:bg-gray-100 lg:hidden'
+                        : 'text-white hover:bg-white/20 lg:hidden'
                     }
                   >
                     <Menu className="size-5" />
                   </Button>
                 </SheetTrigger>
                 <SheetContent>
-                  <div className="flex flex-col gap-4 mt-8">
+                  <div className="mt-8 flex flex-col gap-4">
                     {navLinks.map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}
-                        className="text-gray-600 hover:text-gray-900 transition-colors p-2"
+                        className="p-2 text-gray-600 transition-colors hover:text-gray-900"
                       >
                         {link.label}
                       </Link>
                     ))}
-                    
+
                     {/* Mobile Auth Section */}
                     {isAuthenticated && (
                       <>
-                        <div className="h-px bg-gray-200 my-2" />
+                        <div className="my-2 h-px bg-gray-200" />
+                        <Link
+                          href="/profile"
+                          className="flex items-center gap-2 p-2 text-gray-600 transition-colors hover:text-gray-900"
+                        >
+                          <Settings className="size-4" />
+                          Profile & Settings
+                        </Link>
                         <button
                           onClick={handleDashboardClick}
-                          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors p-2 text-left"
+                          className="flex items-center gap-2 p-2 text-left text-gray-600 transition-colors hover:text-gray-900"
                         >
                           <LayoutDashboard className="size-4" />
                           Dashboard
                         </button>
+                        <Link
+                          href="/wishlist"
+                          className="flex items-center gap-2 p-2 text-gray-600 transition-colors hover:text-gray-900"
+                        >
+                          <Heart className="size-4" />
+                          My Wishlist
+                        </Link>
                         <button
                           onClick={handleLogout}
-                          className="flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors p-2 text-left"
+                          className="flex items-center gap-2 p-2 text-left text-red-600 transition-colors hover:text-red-700"
                         >
                           <LogOut className="size-4" />
                           Logout
